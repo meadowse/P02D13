@@ -1,16 +1,3 @@
-/*
- *   life.c
- *   2014, 2017 (c) Aaron Ceross
- *
- *  This is an implementation of Conway's Game of Life,
- *  https://en.wikipedia.org/wiki/Conway's_Game_of_Life.  I completed this as my
- *  first assignment in C programming, about 3 or 4 weeks from being a total
- *  novice. I would not necessarily go about designing the program like this now
- *  but am nontheless proud of my first attempts in programming.
- *
- */
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,14 +5,14 @@
 
 #define BOARD_LIMIT 80
 #define BOARD_MINUMUM 25
-#define RANDOM 0.20 /* for 20% of the board to be filled with random inhabited cells */
+#define RANDOM 0.20 /* чтобы 20% поля были заполнены случайными обитаемыми ячейками */
 #define MAX_ITERATION 5000
 #define BIRTH_CONDITION 3
-#define SURVIVE_CONDITION_1 3 /* includes the cell itself, hence +1 to the rule condition */
-#define SURVIVE_CONDITION_2 4 /* includes the cell itself, hence +1 to the rule condition */
+#define SURVIVE_CONDITION_1 3 /* включает саму ячейку, поэтому +1 к условию правила */
+#define SURVIVE_CONDITION_2 4 /* ключает саму ячейку, поэтому +1 к условию правила */
 #define ANIMATE 1
 
-//int create_board (int user_size);
+//int создает доску  (int user_size);
 void set_board (int board[][BOARD_LIMIT], int h, int w);
 void randomise_board (int board[][BOARD_LIMIT], int h, int w);
 void print_board (int board[][BOARD_LIMIT], int h, int w);
@@ -34,7 +21,7 @@ int count_neighbours (int board[][BOARD_LIMIT], int i, int j, int h, int w);
 void update_board (int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, int j, int h, int w);
 int check_if_equal(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int h, int w);
 
-/* main program */
+/* main программа */
 int
 main(void)
 {
@@ -43,22 +30,22 @@ main(void)
         int board[BOARD_LIMIT][BOARD_LIMIT];
         int next_board[BOARD_LIMIT][BOARD_LIMIT];
 
-        //user_size = create_board(user_size); /* updates board size based on user input */
-        set_board(board, h, w); /* initialise current board */
+        //user_size = create_board(user_size); /* обновляет размер платы в зависимости от ввода пользователя */
+        set_board(board, h, w); /* инициализировать текущую доску (поле) */
         randomise_board(board, h, w);
-        set_board(next_board, h, w); /* initialise next board to zero */
+        set_board(next_board, h, w); /* инициализировать следующую доску до нуля */
         printf("\nIntial board:\n");
         print_board(board, h, w);
         printf("\nThe Game of Life begins:\n");
 
         for (i = 0; i < MAX_ITERATION; i++) {
-                life_or_death (board, next_board, k, j, h, w); /* update next board */
+                life_or_death (board, next_board, k, j, h, w); /* обновить следующую доску */
                 if (check_if_equal(board, next_board, h, w) == 1) {
                         i = MAX_ITERATION;
                 } else {
                         printf("\nIteration number: %d\n", count);
                         print_board(next_board, h, w);
-                        update_board(board, next_board, k, j, h, w);     /* updates current board */
+                        update_board(board, next_board, k, j, h, w);     /* обновляет текущую доску */
                         count++;
                 }
         }
@@ -68,7 +55,7 @@ main(void)
         return 0;
 }
 
-/* checks if the boards are equal */
+/* проверяет, равны ли доски */
 int
 check_if_equal(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int h, int w)
 {
@@ -88,22 +75,22 @@ check_if_equal(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int h, i
 int
 create_board(int board_size)
 {
-        printf("Welcome to my implementation of Conway's Game of Life\n");
-        printf("Please ensure you are running this terminal at full screen for best results!\n");
-        printf("You can have any size from 2 to 50. How large would you like the board to be? \n");
+        printf("Добро пожаловать в мою реализацию игры жизни Конвея\n");
+        printf("Пожалуйста, убедитесь, что вы используете этот терминал в полноэкранном режиме для достижения наилучших результатов.!\n");
+        printf("У вас может быть любой размер от 25 до 80. Насколько большой должна быть доска? \n");
 
         if (scanf("%d", &board_size) != 1) {
-                printf("There has been an error with your input. Please insert an integer. Try again.\n");
+                printf("Произошла ошибка при вводе. Пожалуйста, введите целое число. Попробуйте снова.\n");
         } else if (board_size > BOARD_LIMIT || board_size < BOARD_MINUMUM) {
-                printf("That is out of bounds for our purposes.\n");
+                printf("Это выходит за рамки наших целей\n");
         } else {
-                printf("The board size is now %d\n", board_size);
+                printf("Теперь размер платы %d\n", board_size);
         }
 
         return board_size;
 }
 
-sets the values of the board to zero - clears junk values */
+устанавливает значения доски на ноль - очищает ненужные значения */
 void
 set_board (int board[][BOARD_LIMIT], int h, int w)
 {
@@ -116,13 +103,13 @@ set_board (int board[][BOARD_LIMIT], int h, int w)
         }
 }
 
-/* randomise board */
+/* рандомизировать доску */
 void
 randomise_board(int board[][BOARD_LIMIT], int h, int w)
 {
         int k, i, j;
   
-        srand((unsigned)time(NULL)); /* set the random seed */
+        srand((unsigned)time(NULL)); /* установить случайное начальное число */
 
         for (k = 0; k < (h * w * RANDOM); k++) {
                 i = rand() % (h);
@@ -131,7 +118,7 @@ randomise_board(int board[][BOARD_LIMIT], int h, int w)
         }
 }
 
-/* prints the board */
+/* печатает доску */
 void
 print_board(int board[][BOARD_LIMIT], int h, int w)
 {
@@ -153,14 +140,14 @@ print_board(int board[][BOARD_LIMIT], int h, int w)
 #endif
 }
 
-/* counts the neighbours of a given cell */
-/* see Note at Line 237 for diagram of index table */
+/* считает соседей данной ячейки */
+/* см. примечание к строке 174 для схемы индексной таблицы. */
 int
 count_neighbours(int board[][BOARD_LIMIT], int k, int j, int h, int w)
 {
         int row_indx, column_indx, value, neighbour_count;
         value = 0;
-        neighbour_count = 0; /* reset count for new cell */
+        neighbour_count = 0; /* сбросить счетчик для новой ячейки */
 
         for (row_indx = -1; row_indx <= 1; row_indx++) {
                 for (column_indx = -1; column_indx <= 1; column_indx++) {
@@ -168,11 +155,11 @@ count_neighbours(int board[][BOARD_LIMIT], int k, int j, int h, int w)
                             (j + column_indx >= 0) &&
                             (k + row_indx < h) &&
                             (j + column_indx < w)) {
-                                /* assign the cell value (0 or 1) to variable value */
+                                /* присвоить значение ячейки (0 или 1) значению переменной */
                                 value = board[k + row_indx][j + column_indx];
-                                  /* value is determined base on the cell.
-                                     if there is a neighbour cell,
-                                     value =1, else value =0
+                                  /* значение определяется на основе ячейки.
+                                  если есть соседняя ячейка,
+                                  значение = 1, иначе значение = 0
                                   */
                                 if (value == 1) {
                                         neighbour_count++;
@@ -184,10 +171,10 @@ count_neighbours(int board[][BOARD_LIMIT], int k, int j, int h, int w)
         return neighbour_count;
 }
 
-/* perform life or death rules */
-/* If the cell is inhabited and has exactly 2 or 3 neighbours - Survive (cell remains inhabited)
- * If the cell is inhabited and has fewer than 2 or more than 3 neighbours - Death (cell becomes uninhabited)
- * If the cell is uninhabited has has exactly 3 neighbours - Birth (cell becomes inhabited) */
+/* выполнять правила жизни или смерти */
+/* Если клетка обитаема и имеет ровно 2 или 3 соседей - Выживает (ячейка остается обитаемой)
+ * Если клетка обитаема и имеет менее 2 или более 3 соседей - Смерть (клетка становится необитаемой)
+ * Если клетка необитаемая имеет ровно 3 соседей - Рождение (клетка становится обитаемой) */
 
 void
 life_or_death(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, int j, int h, int w)
@@ -200,8 +187,8 @@ life_or_death(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, in
                 for (j = 0; j < w; j++) {
                         neighbour_count = count_neighbours(board, k, j, h, w);
                         if (board[k][j] == 0) {
-                                /* cell is uninhabited, check if conditions
-                                   for birth are met
+                                /* ячейка необитаема, проверьте условия
+                                для рождения встречаются
                                 */
                                 if (neighbour_count == BIRTH_CONDITION) {
                                         next_board[k][j] = 1;   /* birth */
@@ -209,13 +196,13 @@ life_or_death(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, in
                                         next_board[k][j] =0;
                                 }
                         } else if (board[k][j] == 1) {
-                                /* cell exists, check if it survies or dies */
+                                /* ячейка существует, проверьте, выжила она или умерла */
                                 if (neighbour_count == SURVIVE_CONDITION_1 ||
                                     neighbour_count == SURVIVE_CONDITION_2) {
-                                        /* survival */
+                                        /* выживание */
                                         next_board[k][j] = board[k][j];
                                 } else {
-                                        /* death */
+                                        /* смерть */
                                         next_board[k][j] = 0;
                                 }
                         }
@@ -224,7 +211,7 @@ life_or_death(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, in
         printf("\n");
 }
 
-/* updates the board for the next iteration */
+/* обновляет плату для следующей итерации*/
 void
 update_board(int board[][BOARD_LIMIT], int next_board[][BOARD_LIMIT], int k, int j, int h, int w)
 {

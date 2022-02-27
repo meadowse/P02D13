@@ -16,8 +16,8 @@ typedef struct {
     Cell *cells;
 } Grid;
 
-/* New grid of dimensions width w and height h.
-* Cells are uninitialized and undefined. */
+/* Новая сетка размеров ширины w и высоты h.
+* Ячейки не инициализированы и не определены. */
 Grid *Grid_new(int h, int w) {
     Grid *g = malloc(sizeof(Grid));
     if (!g) return NULL;
@@ -31,7 +31,7 @@ Grid *Grid_new(int h, int w) {
     return g;
 }
 
-/* Get the cell at (x, y) in grid g. */
+/* Получите ячейку в (x, y) в сетке g. */
 Cell *Grid_get_cell(Grid *g, int x, int y) {
     x %= g->w;
     y %= g->h;
@@ -42,23 +42,23 @@ Cell *Grid_get_cell(Grid *g, int x, int y) {
     return &(g->cells[y * g->w + x]);
 }
 
-/* Kill cell at (x, y) in grid g. */
+/*  Уничтожить ячейку в (x, y) в сетке g. */
 void kill(Grid *g, int x, int y) {
     Grid_get_cell(g, x, y)->alive = false;
 }
 
-/* Give life to cell at (x, y) in grid g. */
+/* Дайте жизнь ячейке в (x, y) в сетке g. */
 void sustain(Grid *g, int x, int y) {
     Grid_get_cell(g, x, y)->alive = true;
 }
 
-/* Is cell at (x, y) in grid g alive? */
+/* Ячейка в (x, y) в сетке g жива? */
 
 boolean alive(Grid *g, int x, int y) {
     return Grid_get_cell(g, x, y)->alive;
 }
 
-/* Kill all cells in grid g. */
+/* Уничтожить все ячейки в сетке g. */
 void Grid_clear(Grid *g) {
     int x, y;
     for (x = 0; x < g->w; x++) {
@@ -67,13 +67,13 @@ void Grid_clear(Grid *g) {
     }
 }
 
-/* Free grid g entirely. */
+/* Свободная сетка g целиком. */
 void Grid_free(Grid *g) {
     free(g->cells);
     free(g);
 }
 
-/* The number of neighbors for cell (x, y) in grid g */
+/* Количество соседей для ячейки (x, y) в сетке g. */
 int neighbor_count(Grid *g, int x, int y) {
     int count = 0;
     if (alive(g, x-1, y-1)) count++;
@@ -87,24 +87,24 @@ int neighbor_count(Grid *g, int x, int y) {
     return count;
 }
 
-/* Will the cell at (x, y) in grid g survive (or come back to life)? */
+/* Выживет ли ячейка (x, y) в сетке g (или вернется к жизни)? */
 boolean survives(Grid *g, int x, int y) {
     int n = neighbor_count(g, x, y);
     if (alive(g, x, y)) {
         if (n < 2)
-            return false; /* starve */
+            return false; /* Колония погибнет */
         else if (n < 4)
             return true;
         else
-            return false; /* over-population */
+            return false; /* Колония погибнет от перенаселения */
         } else {
             if (n == 3)
-                return true; /* reproduction */
+                return true; /* Будет крутиться в цикле*/
         }
     return false;
 }
 
-/* Fill next grid with new states of prev grid cells. */
+/* Заполнить следующую сетку новыми состояниями ячеек предыдущей сетки */
 void Grid_advance(Grid *g) {
     Grid *future = Grid_new(g->h, g->w);
     if (!future) {
@@ -120,12 +120,12 @@ void Grid_advance(Grid *g) {
                 kill(future, x, y);
         }
   }
-    free(g->cells); /* free old cells */
-    g->cells = future->cells; /* save new cells */
-    free(future); /* make sure not to free future->cells */
+    free(g->cells); /* очистит старые клетки */
+    g->cells = future->cells; /* сохранит новые клетки */
+    free(future); /* убедитесь, что не освободите будущие ячейки */
 }
 
-void Grid_print(Grid *g) {
+void Grid_print(Grid *g) { /* печатает сетку */
     int x, y;
     for (y = 0; y < g->h; y++) {
         for (x = 0; x < g->w; x++) {
@@ -142,7 +142,7 @@ int main(void) {
     Grid *g;
     g = Grid_new(25, 80);
     Grid_clear(g);
-    /* Glider */
+     /*Планер или глайдер (пятиклеточная конфигурация "жизни") */
     sustain(g, 5, 25);
     sustain(g, 6, 26);
     sustain(g, 4, 27);
