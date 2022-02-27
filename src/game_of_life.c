@@ -36,13 +36,13 @@ Cell *Grid_get_cell(Grid *g, int x, int y) {
     x %= g->w;
     y %= g->h;
     if (x < 0)
-        x = g->w - x;
+        x = g->w + x;
     if (y < 0)
-        y = g->h - y;
+        y = g->h + y;
     return &(g->cells[y * g->w + x]);
 }
 
-/*  Уничтожить ячейку в (x, y) в сетке g. */
+/* Уничтожить ячейку в (x, y) в сетке g. */
 void kill(Grid *g, int x, int y) {
     Grid_get_cell(g, x, y)->alive = false;
 }
@@ -73,7 +73,7 @@ void Grid_free(Grid *g) {
     free(g);
 }
 
-/* Количество соседей для ячейки (x, y) в сетке g. */
+/* Количество соседей для ячейки (x, y) в сетке g */
 int neighbor_count(Grid *g, int x, int y) {
     int count = 0;
     if (alive(g, x-1, y-1)) count++;
@@ -99,7 +99,7 @@ boolean survives(Grid *g, int x, int y) {
             return false; /* Колония погибнет от перенаселения */
         } else {
             if (n == 3)
-                return true; /* Будет крутиться в цикле*/
+                return true; /* Будет крутиться в цикле */
         }
     return false;
 }
@@ -136,13 +136,30 @@ void Grid_print(Grid *g) { /* печатает сетку */
         }
         printf("\n");
   }
-}
 
+}
 int main(void) {
+    FILE *myfile;
     Grid *g;
     g = Grid_new(25, 80);
     Grid_clear(g);
-     /*Планер или глайдер (пятиклеточная конфигурация "жизни") */
+    int f;
+    printf("Задайте скорость развития симуляции жизни от 1 (очень быстро) до бессконечности (медленнo)\nP.S.: рекомендуем среднюю 200000\n");
+        if (scanf("%d", &f) != 1)
+            printf("Не верно введён параметр скорости");
+    /*Планер или глайдер (пятиклеточная конфигурация "жизни") */
+    /*myfile = fopen("first.txt.", "r");
+    int x, y, b;
+    for (y = 0; y < g->h; y++) {
+        for (x = 0; x < g->w; x++) {
+            b = fgetc(myfile);
+            if (b == 1)
+                Grid_get_cell(g, x, y)->alive = true;
+            else
+                Grid_get_cell(g, x, y)->alive = false;
+        }
+        b = fgetc(myfile);}
+    fclose(myfile); */
     sustain(g, 5, 25);
     sustain(g, 6, 26);
     sustain(g, 4, 27);
@@ -153,7 +170,7 @@ int main(void) {
         printf("Timer: %d\n", i);
         Grid_advance(g);
         Grid_print(g);
-        sleep(1);
+        usleep(f);
     }
   Grid_free(g);
     return 0;
